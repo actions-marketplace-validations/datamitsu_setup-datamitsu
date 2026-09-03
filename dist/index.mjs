@@ -19324,31 +19324,31 @@ function _getGlobal(key, defaultValue) {
 }
 //#endregion
 //#region src/generated.ts
-const VERSION = "0.1.15";
+const VERSION = "0.2.2";
 const RELEASES = {
 	"linux_amd64": {
-		file: "datamitsu_0.1.15_linux_amd64.tar.gz",
-		sha256: "d02e27c214d3b6fe9f1caae12732a44ad2c52085352b194176829ceab1bb2cd6"
+		file: "datamitsu_0.2.2_linux_amd64.tar.gz",
+		sha256: "e214a5bff9575a1f9881f70e5d1e92de199b78c8bca0bf7d75b16b51853a3ea2"
 	},
 	"linux_arm64": {
-		file: "datamitsu_0.1.15_linux_arm64.tar.gz",
-		sha256: "f07d5453ce4d73133e7c6315899dceb0c84f73c05b581b80e482258fa068ffea"
+		file: "datamitsu_0.2.2_linux_arm64.tar.gz",
+		sha256: "e11614520cef0e05bc1fb1876e79ca9e21008558444f753350e5e52150875ec6"
 	},
 	"darwin_amd64": {
-		file: "datamitsu_0.1.15_darwin_amd64.tar.gz",
-		sha256: "5c5ff4a30f673f85356be5e4ea9305c015c54f4ad571dc061fa7283faa9feb3f"
+		file: "datamitsu_0.2.2_darwin_amd64.tar.gz",
+		sha256: "5140398ea07fd8908182fcc63ea067a249aa35a2c5762d6da850234745c83d7a"
 	},
 	"darwin_arm64": {
-		file: "datamitsu_0.1.15_darwin_arm64.tar.gz",
-		sha256: "dc4e49d9ab3ad1838c05f66a5cb7913805430df457c61853d07a353b00486071"
+		file: "datamitsu_0.2.2_darwin_arm64.tar.gz",
+		sha256: "ac58070240c26677ff56417c74d26b17ab3a1b3dfb201e65903635f8d239a757"
 	},
 	"windows_amd64": {
-		file: "datamitsu_0.1.15_windows_amd64.zip",
-		sha256: "4b84df010ef66318f9ff4bbd137d461a820bde9730858a9f457c1de28f43d347"
+		file: "datamitsu_0.2.2_windows_amd64.zip",
+		sha256: "8fa5309995d182d9c61ab4ebe1e2e6a5e5292fb401b246e008922dafb7ea92b5"
 	},
 	"windows_arm64": {
-		file: "datamitsu_0.1.15_windows_arm64.zip",
-		sha256: "a7b33e48b7459616ac70256bc59b409533b1ead3b8015032de4342779645b183"
+		file: "datamitsu_0.2.2_windows_arm64.zip",
+		sha256: "9d8fab766734f280700201b7dc1671b785f0b45680eee588ba4565a327ac880a"
 	}
 };
 //#endregion
@@ -19391,17 +19391,17 @@ async function install() {
 	const digest = await sha256(archive);
 	if (digest !== asset.sha256) throw new Error(`SHA-256 mismatch for ${asset.file}: expected ${asset.sha256}, got ${digest}`);
 	info(`Verified SHA-256 ${digest}`);
-	const dir = await cacheDir(asset.file.endsWith(".zip") ? await extractZip(archive) : await extractTar(archive), TOOL, VERSION, goarch);
-	addPath(dir);
-	return dir;
+	const installPath = await cacheDir(asset.file.endsWith(".zip") ? await extractZip(archive) : await extractTar(archive), TOOL, VERSION, goarch);
+	addPath(installPath);
+	return installPath;
 }
 async function run() {
-	const dir = await install();
+	const installPath = await install();
 	setOutput("version", VERSION);
-	info(`datamitsu ${VERSION} ready (${dir})`);
+	info(`datamitsu ${VERSION} ready (${installPath})`);
 	if (getBooleanInput("init")) await exec(TOOL, ["init"]);
-	const args = getInput("args");
-	if (args.trim() !== "") await exec(`${TOOL} ${args}`);
+	const arguments_ = getInput("args");
+	if (arguments_.trim() !== "") await exec(`${TOOL} ${arguments_}`);
 }
 async function sha256(file) {
 	const hash = createHash("sha256");
